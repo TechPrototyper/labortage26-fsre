@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # d) Projektverzeichnisse in der VM einrichten (idempotent):
 #   ~/Projects/fsre/labortage26-fsre     dieses Repository
+#   ~/Projects/fsre/labortage              Verknüpfung auf den Mac-Ordner $LABORTAGE_DIR (Folien, Abbilder aus den Labortagen)
 #   ~/Projects/fsre/code                   Verknüpfung auf den Mac-Ordner $LAB_CODE_DIR (eigener Code, bleibt erhalten)
 # Weitere Repositories legst du einfach als weitere Ordner unter ~/Projects/fsre/ ab.
 source "$(dirname "$0")/lib.sh"
@@ -26,6 +27,8 @@ clone_or_pull "$1" "$base/labortage26-fsre" || echo "  !! Repo nicht klonbar (no
 # Intel-ME-Flash-Werkzeug aus dem Workshop (Rust): Beispiel für "Dateisystem eines Firmware-Images" (MFS)
 clone_or_pull https://github.com/platform-system-interface/intel_fw.git "$base/intel_fw" || echo "  !! intel_fw nicht klonbar" >&2
 ln -sfn /mnt/code "$base/code"
+ln -sfn /mnt/labortage "$base/labortage"
+[ -d "$base/labortage" ] || { echo "  !! $base/labortage zeigt ins Leere - ist der Mount /mnt/labortage vorhanden?" >&2; exit 1; }
 [ -d "$base/code" ] || { echo "  !! $base/code zeigt ins Leere - ist der Mount /mnt/code vorhanden?" >&2; exit 1; }
 GUEST
 

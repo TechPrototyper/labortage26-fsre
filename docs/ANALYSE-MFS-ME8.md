@@ -1,6 +1,6 @@
 # Analyse: EFFS/„MFS“-Dateisystem der Intel Management Engine 8 (Workshop-Material)
 
-Ausgangsmaterial (`~/labortage/fsanalyse`): Folien `file-system-analysis-mrmcd2026.pdf`, `mfs.bin` (901 120 Byte), `foo.bin` (901 100 Byte)
+Ausgangsmaterial (`~/Projects/labortage/fsanalyse`): Folien `file-system-analysis-mrmcd2026.pdf`, `mfs.bin` (901 120 Byte), `foo.bin` (901 100 Byte)
 und das „Intel ME 8 Firmware Repository Pack r11“ (`ime/*.bin`, 53 Abbilder, ME 8.0.0.1178 … 8.1.70.1590).
 Alle Offsets unten sind **Dateioffsets** (global), sofern nicht „Seite+…“ dabeisteht. Reproduzierbar mit
 `examples/mfs_analyze.py <Abbild> [--cells]`. Gewissheit: **[belegt]** = an allen Abbildern geprüft, **[Hypothese]** = plausibel, nicht bewiesen.

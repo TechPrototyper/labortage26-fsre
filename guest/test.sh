@@ -7,6 +7,7 @@ pass() { printf '\033[1;32m  PASS\033[0m %s\n' "$*"; }
 fail() { printf '\033[1;31m  FAIL\033[0m %s\n' "$*"; exit 1; }
 ex="$HOME/Projects/fsre/labortage26-fsre/examples"
 [ -d "$ex" ] && pass "Beispiele vorhanden" || fail "Beispiele fehlen"
+[ -d "$HOME/Projects/fsre/labortage/fsanalyse" ] && pass "labortage -> Mac-Ordner (fsanalyse sichtbar)" || fail "labortage-Link"
 [ -L "$HOME/Projects/fsre/code" ] && [ -d "$HOME/Projects/fsre/code" ] && pass "code -> Mac-Ordner" || fail "code-Link"
 
 # 1. Werkzeuge

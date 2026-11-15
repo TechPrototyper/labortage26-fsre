@@ -15,6 +15,7 @@ C, Go, Rust, VSCodium (+ Hex-Editor, Python, Rust), Chromium, Claude Code / Open
 
 Ordner in der VM: `~/Projects/fsre/{labortage26-fsre, intel_fw, code→Mac}`; `code` liegt auf dem Mac
 (`~/Projects/fsre/code`) und überlebt jeden VM-Neuaufbau. Eigene Abbilder gern dort ablegen.
+`labortage` zeigt auf den Mac-Ordner `~/Projects/labortage` (Folien, Firmware-Abbilder `fsanalyse/`, Analyse-Notizen).
 
 `examples/`: `mktoy.py` (erfindet ein Mini-Dateisystem), `parse_toy.py` (Parser), `toy.hexpat` (ImHex-Muster),
 `crcbrute.py` (CRC-Variante finden), `mfs_analyze.py` + `docs/ANALYSE-MFS-ME8.md` (Beispielanalyse: Intel-ME-8-Dateisystem). Die Workshop-Tipps: Ausrichtung 16 B…64 K, Little Endian,

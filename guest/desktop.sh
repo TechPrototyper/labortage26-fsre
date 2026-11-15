@@ -28,6 +28,7 @@ cat > "$HOME/Fsre.code-workspace" <<'WS'
 {
   "folders": [
     { "name": "code (liegt auf dem Mac)", "path": "Projects/fsre/code" },
+    { "name": "labortage (liegt auf dem Mac)", "path": "Projects/fsre/labortage" },
     { "name": "intel_fw", "path": "Projects/fsre/intel_fw" },
     { "name": "examples", "path": "Projects/fsre/labortage26-fsre/examples" },
     { "name": "labortage26-fsre", "path": "Projects/fsre/labortage26-fsre" }

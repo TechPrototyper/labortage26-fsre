@@ -3,7 +3,8 @@
 source "$(dirname "$0")/lib.sh"
 command -v limactl >/dev/null || die "limactl fehlt - erst 01-host.sh ausführen"
 
-mkdir -p "$LAB_CODE_DIR"
+mkdir -p "$LAB_CODE_DIR" "$LABORTAGE_DIR"
+MOUNTS="[{\"location\": \"$LAB_CODE_DIR\", \"mountPoint\": \"/mnt/code\", \"writable\": true}, {\"location\": \"$LABORTAGE_DIR\", \"mountPoint\": \"/mnt/labortage\", \"writable\": true}]"
 
 # Image selbst laden (fortsetzbar, IPv4, mit Wiederholung) und per SHA-512 prüfen;
 # Lima bricht bei Netzwerk-Timeouts sonst komplett ab.
@@ -36,8 +37,15 @@ else
   fetch_image
   log "Lege VM '$VM_NAME' an"
   limactl create --tty=false --name="$VM_NAME" \
-    --set ".images = [{\"location\": \"$IMG\", \"arch\": \"aarch64\", \"digest\": \"sha512:$IMG_SHA\"}] | .mounts = [{\"location\": \"$LAB_CODE_DIR\", \"mountPoint\": \"/mnt/code\", \"writable\": true}]" \
+    --set ".images = [{\"location\": \"$IMG\", \"arch\": \"aarch64\", \"digest\": \"sha512:$IMG_SHA\"}] | .mounts = $MOUNTS" \
     "$LAB_DIR/lab.yaml"
+fi
+
+# Bestehende VM: fehlende Mounts nachtragen (nur im gestoppten Zustand möglich)
+if vm_exists && ! grep -q "/mnt/labortage" "$LIMA_HOME/$VM_NAME/lima.yaml"; then
+  vm_running && die "Mount /mnt/labortage fehlt, VM läuft aber: erst 'limactl stop $VM_NAME', dann dieses Skript erneut ausführen"
+  log "Ergänze Mounts der VM '$VM_NAME'"
+  limactl edit --tty=false --set ".mounts = $MOUNTS" "$VM_NAME"
 fi
 
 # Lima-Schutz gegen versehentliches "limactl delete" (idempotent)

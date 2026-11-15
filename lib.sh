@@ -6,6 +6,8 @@ LAB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAB_ENV_REPO_URL="${LAB_ENV_REPO_URL:-https://github.com/TechPrototyper/labortage26-fsre.git}"
 # Mac-Ordner mit deinem eigenen Code; erscheint in der VM als ~/Projects/fsre/code und überlebt jeden VM-Neuaufbau.
 LAB_CODE_DIR="${LAB_CODE_DIR:-$HOME/Projects/fsre/code}"
+# Sammelordner für alles aus den Labortagen (Folien, Abbilder, Notizen); erscheint in der VM als ~/Projects/fsre/labortage.
+LABORTAGE_DIR="${LABORTAGE_DIR:-$HOME/Projects/labortage}"
 VM_NAME="${VM_NAME:-fsre}"
 export LIMA_HOME="${LIMA_HOME:-$HOME/.lima}"
 for p in /opt/homebrew/bin /usr/local/bin; do

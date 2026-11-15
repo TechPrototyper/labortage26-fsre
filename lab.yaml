@@ -21,6 +21,10 @@ mounts:
 - location: "~/Projects/fsre/code"
   mountPoint: /mnt/code
   writable: true
+# Sammelordner Labortage (von 02-vm.sh passend zu LABORTAGE_DIR gesetzt)
+- location: "~/Projects/labortage"
+  mountPoint: /mnt/labortage
+  writable: true
 
 # Fenster der VM direkt über Apples Framework (kein X11/XQuartz auf dem Mac).
 video:
