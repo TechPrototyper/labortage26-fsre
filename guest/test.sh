@@ -58,7 +58,7 @@ R
 rustc -o "$t/prs" "$t/p.rs" 2>/dev/null && "$t/prs" "$t/toy.img" && pass "Rust-Parser" || fail "Rust"
 
 # ImHex startet unter virtuellem X-Server und öffnet ein Fenster
-xvfb-run -a -s '-screen 0 1280x800x24' bash -c '(imhex >/tmp/imhex.log 2>&1 &); sleep 25; xwininfo -root -tree | grep -qi imhex; r=$?; pkill -f imhex || true; exit $r' \
+xvfb-run -a -s '-screen 0 1280x800x24' bash -c '(imhex >/tmp/imhex.log 2>&1 &); sleep 25; xwininfo -root -tree | grep -qi imhex; r=$?; pkill -f /opt/imhex || true; exit $r' \
   && pass "ImHex öffnet ein Fenster" || fail "ImHex-Fenster"
 
 # 5. Browser
