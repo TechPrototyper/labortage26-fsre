@@ -126,12 +126,15 @@ if [ "$(cat /var/lib/lab/imhex.sha 2>/dev/null)" != "$IMHEX_SHA" ] || [ ! -x /op
   chmod +x "$tmp/imhex.AppImage"
   (cd "$tmp" && ./imhex.AppImage --appimage-extract >/dev/null)
   rm -rf /opt/imhex; mv "$tmp/squashfs-root" /opt/imhex
-  ln -sf /opt/imhex/AppRun /usr/local/bin/imhex
   echo "$IMHEX_SHA" > /var/lib/lab/imhex.sha
   rm -rf "$tmp"
 else
   log "ImHex bereits installiert"
 fi
+# Wrapper statt Symlink: AppRun findet sein Verzeichnis sonst nicht
+rm -f /usr/local/bin/imhex
+printf '#!/bin/sh\nexec /opt/imhex/AppRun "$@"\n' > /usr/local/bin/imhex
+chmod 755 /usr/local/bin/imhex
 
 mkdir -p /etc/profile.d
 cat > /etc/profile.d/fsre.sh <<'FSRE'
