@@ -57,6 +57,10 @@ fn main(){let b=std::fs::read(std::env::args().nth(1).unwrap()).unwrap();std::pr
 R
 rustc -o "$t/prs" "$t/p.rs" 2>/dev/null && "$t/prs" "$t/toy.img" && pass "Rust-Parser" || fail "Rust"
 
+# ImHex startet unter virtuellem X-Server und öffnet ein Fenster
+xvfb-run -a -s '-screen 0 1280x800x24' bash -c '(imhex >/tmp/imhex.log 2>&1 &); sleep 25; xwininfo -root -tree | grep -qi imhex; r=$?; pkill -f imhex || true; exit $r' \
+  && pass "ImHex öffnet ein Fenster" || fail "ImHex-Fenster"
+
 # 5. Browser
 chromium --version >/dev/null 2>&1 && pass "$(chromium --version)" || fail "chromium"
 [ "$(xdg-settings get default-web-browser 2>/dev/null)" = chromium.desktop ] && pass "Standard-Browser: Chromium" || fail "Standard-Browser"
