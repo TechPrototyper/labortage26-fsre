@@ -14,6 +14,10 @@ for t in xxd hexedit python3 gcc go rustc cargo file binwalk fls icat mmls testd
   command -v "$t" >/dev/null 2>&1 && pass "$t" || fail "$t fehlt"
 done
 command -v imhex >/dev/null 2>&1 && [ -x /opt/imhex/AppRun ] && pass "ImHex (AppImage entpackt)" || fail "ImHex"
+for t in r2 reveng kaitai-struct-compiler; do command -v "$t" >/dev/null 2>&1 && pass "$t" || fail "$t fehlt"; done
+"$HOME/.venvs/fsre/bin/python" -c 'import pytsk3' >/dev/null 2>&1 && pass "pytsk3" || fail "pytsk3"
+export PATH="$PATH:$HOME/.local/bin"; command -v jefferson >/dev/null 2>&1 && pass "jefferson" || fail "jefferson"
+[ "$(reveng -w 16 -p 1021 -i ffff -c 313233343536373839 2>/dev/null)" = 29b1 ] && pass "reveng rechnet CRC-16/IBM-3740 (29b1)" || fail "reveng CRC"
 python3 -c 'import construct; print(construct.version)' >/dev/null 2>&1 && pass "python3-construct" || fail "construct"
 codium --version >/dev/null 2>&1 && pass "VSCodium" || fail "codium"
 

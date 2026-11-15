@@ -18,13 +18,13 @@ REQUIRED="build-essential git make gdb pkg-config curl ca-certificates gnupg xz-
   binutils file binwalk
   sleuthkit testdisk foremost
   dosfstools e2fsprogs mtools squashfs-tools exfatprogs ntfs-3g btrfs-progs xfsprogs f2fs-tools erofs-utils
+  default-jre-headless libtsk-dev python3-kaitaistruct pipx
   p7zip-full unar lz4 zstd lzop cabextract qemu-utils
   x11-utils x11-xserver-utils xdotool xvfb imagemagick xfce4 xfce4-terminal lightdm lightdm-gtk-greeter dbus-x11
   xserver-xorg-core xserver-xorg-input-libinput fonts-dejavu fonts-liberation fonts-firacode mousepad locales zenity
   chromium"
 # Nicht jedes Paket gibt es in jeder Debian-Version; fehlende werden übersprungen und gemeldet.
-OPTIONAL="reveng imhex bless wxhexeditor okteta ghex hexyl radare2 scalpel ewf-tools gddrescue ddrescue fatcat jefferson
-  python3-pytsk3 kaitai-struct-compiler libguestfs-tools dcfldd htop tree ncdu lsof"
+OPTIONAL="wxhexeditor okteta ghex hexyl scalpel ewf-tools gddrescue fatcat libguestfs-tools dcfldd htop tree ncdu lsof"
 avail() { LC_ALL=C apt-cache policy "$1" 2>/dev/null | awk '/Candidate:/ {print ($2 != "(none)" && $2 != "")}' | grep -q 1; }
 
 log "apt update"
@@ -113,6 +113,34 @@ fi
 # Hilfsprogramme aus dem Repo (labzoom); 03-provision.sh legt sie in /tmp/fsre-bin ab
 if [ -d /tmp/fsre-bin ]; then
   install -m 755 /tmp/fsre-bin/* /usr/local/bin/
+fi
+
+# Weitere Werkzeuge, die es in Debian 13 nicht gibt: gepinnte Pakete/Quellen mit SHA-256-Prüfung
+fetch_verified() { # url sha256 ziel
+  curl -fsSL -o "$3" "$1"
+  echo "$2  $3" | sha256sum -c --status || { echo "Prüfsumme falsch: $1" >&2; exit 1; }
+}
+install_deb() { # name url sha256
+  if [ "$(cat "/var/lib/lab/$1.sha" 2>/dev/null)" = "$3" ]; then log "$1 bereits installiert"; return; fi
+  log "Installiere $1"
+  tmp="$(mktemp -d)"; fetch_verified "$2" "$3" "$tmp/p.deb"
+  apt-get install -y -qq "$tmp/p.deb"; echo "$3" > "/var/lib/lab/$1.sha"; rm -rf "$tmp"
+}
+install_deb radare2 https://github.com/radareorg/radare2/releases/download/6.2.6/radare2_6.2.6_arm64.deb 527a8c8a970d5d5013d46ba20d50ef884e33650285c9b3ced64f225b87b7573d
+install_deb kaitai-struct-compiler https://github.com/kaitai-io/kaitai_struct_compiler/releases/download/0.11/kaitai-struct-compiler_0.11_all.deb 28d6b6ec917e394ed41cb6f62169a8f6b584d9a5242cbe0785b0568d95e032ea
+# CRC RevEng (Greg Cook): CRC-Parameter aus Beispielen bestimmen (Workshop-Tipp "CRC-Varianten durchprobieren")
+REVENG_SHA=914146bf7f4a4467826904cb913d5d21dc5c2997ef24fa7cf9bdcc43eccf15f0
+if [ "$(cat /var/lib/lab/reveng.sha 2>/dev/null)" != "$REVENG_SHA" ] || ! command -v reveng >/dev/null; then
+  log "reveng 3.0.5 bauen"
+  tmp="$(mktemp -d)"; fetch_verified "https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.tar.gz/download" "$REVENG_SHA" "$tmp/r.tgz"
+  tar -xzf "$tmp/r.tgz" -C "$tmp"
+  # 64-Bit-Wortbreite (sonst bricht der Selbsttest "configuration fault" ab)
+  sed -i -e 's/^#define BMP_BIT   32/#define BMP_BIT   64/' -e 's/^#define BMP_SUB   16/#define BMP_SUB   32/' "$tmp/reveng-3.0.5/config.h"
+  make -C "$tmp/reveng-3.0.5" -j"$(nproc)" >/dev/null 2>&1 || make -C "$tmp/reveng-3.0.5" >/dev/null
+  install -m 755 "$tmp/reveng-3.0.5/reveng" /usr/local/bin/reveng
+  echo "$REVENG_SHA" > /var/lib/lab/reveng.sha; rm -rf "$tmp"
+else
+  log "reveng bereits installiert"
 fi
 
 # ImHex (Hex-Editor mit Mustersprache; nicht in Debian): offizielles arm64-AppImage, SHA-256 gepinnt, entpackt (kein FUSE nötig)
